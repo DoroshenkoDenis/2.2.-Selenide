@@ -29,7 +29,7 @@ public class CallbackTest {
     void setUp() {
         Configuration.headless = true;
         open("http://localhost:9999");
-    //----- Clear date field -------------------------------
+        //----- Clear date field -------------------------------
         dateField.sendKeys(Keys.CONTROL, "a");
         dateField.sendKeys(Keys.DELETE);
     }

@@ -1,45 +1,63 @@
 package ru.netology.web;
 
+import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.Keys;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.List;
 
-import static com.codeborne.selenide.Condition.exist;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selectors.*;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.*;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 public class CallbackComplexElementsTest {
+    LocalDate currentDate = LocalDate.now();
+    LocalDate dateOfDelivery = LocalDate.now().plusDays(7);
     SelenideElement cityField = $("[data-test-id=city] .input__control");
-    SelenideElement dateField = $("[data-test-id=date] .input__control");
     SelenideElement nameField = $("[data-test-id=name] .input__control");
     SelenideElement phoneField = $("[data-test-id=phone] .input__control");
     SelenideElement checkboxField = $("[data-test-id=agreement] .checkbox__box");
     SelenideElement buttonSentField = $(".button__text");
     SelenideElement notification = $(".notification__title");
-    SelenideElement inputError = $((".input_invalid"));
 
     @BeforeEach
     void setUp() {
-        open("http://localhost:9999");
         Configuration.headless = true;
+        open("http://localhost:9999");
     }
 
+    //    Выбор даты на неделю вперёд (начиная от текущей даты) через инструмент календаря
+    void setDateStepSevenDays() {
+        $(".input__icon").click();
+        if (currentDate.getMonthValue() != dateOfDelivery.getMonthValue()) {
+            $("[data-step='1'").click();
+        }
+        $$("td.calendar__day").find(text(dateOfDelivery.format(ofPattern("d")))).click();
+    }
+
+    //    Ввод 2 букв в поле город, после чего выбор нужного города из выпадающего списка
     @Test
-    public void shouldSent() {
+    public void shouldSentUseComplexElements() {
         cityField.setValue("сп");
-        cityField.$("menu-item").find(withText("Санкт-Петербург")).click();
+        $$(".menu-item").find(exactText("Ставрополь")).click();
+        setDateStepSevenDays();
+        nameField.setValue("Иван Петров");
+        phoneField.setValue("+79000000000");
+        checkboxField.click();
+        buttonSentField.click();
+        notification.shouldBe(visible, Duration.ofSeconds(15));
     }
 
-
+    //    (дополнительно) Ввод 2 букв в поле город, после чего проверка списка городов из выпадающего списка
+    @Test
+    public void shouldFindAllCityByTwoLetters() {
+        cityField.setValue("сп");
+        $$(".menu-item").shouldHave(CollectionCondition.containTexts("Санкт-Петербург", "Севастополь", "Симферополь", "Ставрополь"));
+        System.out.println($$(".menu-item").texts());
+    }
 
 }
 
