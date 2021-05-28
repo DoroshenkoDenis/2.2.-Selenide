@@ -27,11 +27,11 @@ public class CallbackTest {
 
     @BeforeEach
     void setUp() {
+        Configuration.headless = true;
         open("http://localhost:9999");
-//        clear date field
+    //----- Clear date field -------------------------------
         dateField.sendKeys(Keys.CONTROL, "a");
         dateField.sendKeys(Keys.DELETE);
-//        Configuration.headless = true;
     }
 
     @Test
@@ -170,7 +170,8 @@ public class CallbackTest {
         buttonSentField.click();
         inputError.shouldBe(exist);
     }
-@Test
+
+    @Test
     public void shouldWarnIfBadTelephone2() {
         cityField.setValue("Москва");
         dateField.setValue(date);
@@ -180,7 +181,8 @@ public class CallbackTest {
         buttonSentField.click();
         inputError.shouldBe(exist);
     }
-@Test
+
+    @Test
     public void shouldWarnIfBadTelephone3() {
         cityField.setValue("Москва");
         dateField.setValue(date);
