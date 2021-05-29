@@ -33,6 +33,7 @@ public class CallbackComplexElementsTest {
     SelenideElement notification = $(".notification__title");
     SelenideElement calendar = $(".input__icon");
     ElementsCollection dateList = $$("td.calendar__day");
+    ElementsCollection cityList = $$(".menu-item");
 
     @BeforeEach
     void setUp() {
@@ -66,8 +67,8 @@ public class CallbackComplexElementsTest {
     @Test
     public void shouldFindAllCityByTwoLetters() {
         cityField.setValue("сп");
-        $$(".menu-item").shouldHave(CollectionCondition.containTexts("Санкт-Петербург", "Севастополь", "Симферополь", "Ставрополь"));
-        System.out.println($$(".menu-item").texts());
+        cityList.shouldHave(CollectionCondition.containTexts("Санкт-Петербург", "Севастополь", "Симферополь", "Ставрополь"));
+        System.out.println(cityList.texts());
     }
 
 }
