@@ -2,6 +2,7 @@ package ru.netology.web;
 
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,8 @@ import static com.codeborne.selenide.Selenide.*;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 public class CallbackComplexElementsTest {
-    LocalDate currentDate = LocalDate.now();
     int dateStep = 7;
+    LocalDate currentDate = LocalDate.now();
     LocalDate dateOfDelivery = LocalDate.now().plusDays(dateStep);
 
     String twoLettersForSearch = "сп";
@@ -30,20 +31,22 @@ public class CallbackComplexElementsTest {
     SelenideElement checkboxField = $("[data-test-id=agreement] .checkbox__box");
     SelenideElement buttonSentField = $(".button__text");
     SelenideElement notification = $(".notification__title");
+    SelenideElement calendar = $(".input__icon");
+    ElementsCollection dateList = $$("td.calendar__day");
 
     @BeforeEach
     void setUp() {
-        Configuration.headless = true;
+//        Configuration.headless = true;
         open("http://localhost:9999");
     }
 
     //    Выбор даты на неделю вперёд (начиная от текущей даты) через инструмент календаря
     void setDateStepSevenDays() {
-        $(".input__icon").click();
+        calendar.click();
         if (currentDate.getMonthValue() != dateOfDelivery.getMonthValue()) {
             $("[data-step='1'").click();
         }
-        $$("td.calendar__day").find(text(dateOfDelivery.format(ofPattern("d")))).click();
+        dateList.find(text(dateOfDelivery.format(ofPattern("d")))).click();
     }
 
     //    Ввод 2 букв в поле город, после чего выбор нужного города из выпадающего списка
