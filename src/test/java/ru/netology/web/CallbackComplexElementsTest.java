@@ -15,7 +15,15 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 
 public class CallbackComplexElementsTest {
     LocalDate currentDate = LocalDate.now();
-    LocalDate dateOfDelivery = LocalDate.now().plusDays(7);
+    int dateStep = 7;
+    LocalDate dateOfDelivery = LocalDate.now().plusDays(dateStep);
+
+    String twoLettersForSearch = "сп";
+    String city = "Ставрополь";
+    String user = "Иван Петров";
+    String tel = "+79000000000";
+
+    SelenideElement selectedCity = $$(".menu-item").find(exactText(city));
     SelenideElement cityField = $("[data-test-id=city] .input__control");
     SelenideElement nameField = $("[data-test-id=name] .input__control");
     SelenideElement phoneField = $("[data-test-id=phone] .input__control");
@@ -41,11 +49,11 @@ public class CallbackComplexElementsTest {
     //    Ввод 2 букв в поле город, после чего выбор нужного города из выпадающего списка
     @Test
     public void shouldSentUseComplexElements() {
-        cityField.setValue("сп");
-        $$(".menu-item").find(exactText("Ставрополь")).click();
+        cityField.setValue(twoLettersForSearch);
+        selectedCity.click();
         setDateStepSevenDays();
-        nameField.setValue("Иван Петров");
-        phoneField.setValue("+79000000000");
+        nameField.setValue(user);
+        phoneField.setValue(tel);
         checkboxField.click();
         buttonSentField.click();
         notification.shouldBe(visible, Duration.ofSeconds(15));

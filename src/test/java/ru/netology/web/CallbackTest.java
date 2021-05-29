@@ -15,7 +15,25 @@ import static com.codeborne.selenide.Selenide.$;
 import static java.time.format.DateTimeFormatter.*;
 
 public class CallbackTest {
-    String date = LocalDate.now().plusDays(4).format(ofPattern("dd.MM.yyyy"));
+    String city = "Казань";
+    String badCity1 = "Тольятти";
+    String badCity2 = "Kazan";
+
+    int dateStep = 4;
+    String date = LocalDate.now().plusDays(dateStep).format(ofPattern("dd.MM.yyyy"));
+    int badDateStep1 = -2;
+    String badDate1 = LocalDate.now().plusDays(badDateStep1).format(ofPattern("dd.MM.yyyy"));
+    int badDateStep2 = 2;
+    String badDate2 = LocalDate.now().plusDays(badDateStep2).format(ofPattern("dd.MM.yyyy"));
+
+    String user = "Иван Петров";
+    String badUser = "Ivan Petrov";
+
+    String tel = "+70000000000";
+    String badTel1 = "+12345";
+    String badTel2 = "+123456789012";
+    String badTel3 = "+abcdefghijk";
+
     SelenideElement cityField = $("[data-test-id=city] .input__control");
     SelenideElement dateField = $("[data-test-id=date] .input__control");
     SelenideElement nameField = $("[data-test-id=name] .input__control");
@@ -29,17 +47,17 @@ public class CallbackTest {
     void setUp() {
         Configuration.headless = true;
         open("http://localhost:9999");
+
         //----- Clear date field -------------------------------
-        dateField.sendKeys(Keys.CONTROL, "a");
-        dateField.sendKeys(Keys.DELETE);
+        dateField.sendKeys(Keys.CONTROL, "a", Keys.DELETE);
     }
 
     @Test
     public void shouldSent() {
-        cityField.setValue("Казань");
+        cityField.setValue(city);
         dateField.setValue(date);
-        nameField.setValue("Иван Петров");
-        phoneField.setValue("+79000000000");
+        nameField.setValue(user);
+        phoneField.setValue(tel);
         checkboxField.click();
         buttonSentField.click();
         notification.shouldBe(visible, Duration.ofSeconds(15));
@@ -55,8 +73,8 @@ public class CallbackTest {
     @Test
     public void shouldWarnIfEmptyCityNameField() {
         dateField.setValue(date);
-        nameField.setValue("Иван Петров");
-        phoneField.setValue("+79000000000");
+        nameField.setValue(user);
+        phoneField.setValue(tel);
         checkboxField.click();
         buttonSentField.click();
         inputError.shouldBe(exist);
@@ -64,9 +82,9 @@ public class CallbackTest {
 
     @Test
     public void shouldWarnIfEmptyUserNameField() {
-        cityField.setValue("Казань");
+        cityField.setValue(city);
         dateField.setValue(date);
-        phoneField.setValue("+79000000000");
+        phoneField.setValue(tel);
         checkboxField.click();
         buttonSentField.click();
         inputError.shouldBe(exist);
@@ -74,9 +92,9 @@ public class CallbackTest {
 
     @Test
     public void shouldWarnIfDateNotChanged() {
-        cityField.setValue("Казань");
-        nameField.setValue("Иван Петров");
-        phoneField.setValue("+79000000000");
+        cityField.setValue(city);
+        nameField.setValue(user);
+        phoneField.setValue(tel);
         checkboxField.click();
         buttonSentField.click();
         inputError.shouldBe(exist);
@@ -84,9 +102,9 @@ public class CallbackTest {
 
     @Test
     public void shouldWarnIfEmptyTelephoneField() {
-        cityField.setValue("Казань");
+        cityField.setValue(city);
         dateField.setValue(date);
-        nameField.setValue("Иван Петров");
+        nameField.setValue(user);
         checkboxField.click();
         buttonSentField.click();
         inputError.shouldBe(exist);
@@ -94,10 +112,10 @@ public class CallbackTest {
 
     @Test
     public void shouldWarnIfEmptyCheckbox() {
-        cityField.setValue("Казань");
+        cityField.setValue(city);
         dateField.setValue(date);
-        nameField.setValue("Иван Петров");
-        phoneField.setValue("+79000000000");
+        nameField.setValue(user);
+        phoneField.setValue(tel);
         buttonSentField.click();
         inputError.shouldBe(exist);
     }
@@ -105,10 +123,10 @@ public class CallbackTest {
     //------ Bad input -------------------------------
     @Test
     public void shouldWarnIfBadCityName1() {
-        cityField.setValue("Тольятти");
+        cityField.setValue(badCity1);
         dateField.setValue(date);
-        nameField.setValue("Иван Петров");
-        phoneField.setValue("+79000000000");
+        nameField.setValue(user);
+        phoneField.setValue(tel);
         checkboxField.click();
         buttonSentField.click();
         inputError.shouldBe(exist);
@@ -116,10 +134,10 @@ public class CallbackTest {
 
     @Test
     public void shouldWarnIfBadCityName2() {
-        cityField.setValue("Kazan");
+        cityField.setValue(badCity2);
         dateField.setValue(date);
-        nameField.setValue("Иван Петров");
-        phoneField.setValue("+79000000000");
+        nameField.setValue(user);
+        phoneField.setValue(tel);
         checkboxField.click();
         buttonSentField.click();
         inputError.shouldBe(exist);
@@ -127,11 +145,10 @@ public class CallbackTest {
 
     @Test
     public void shouldWarnIfBadDate1() {
-        String date = LocalDate.now().plusDays(-2).format(ofPattern("dd.MM.yyyy"));
-        cityField.setValue("Москва");
-        dateField.setValue(date);
-        nameField.setValue("Иван Петров");
-        phoneField.setValue("+79000000000");
+        cityField.setValue(city);
+        dateField.setValue(badDate1);
+        nameField.setValue(user);
+        phoneField.setValue(tel);
         checkboxField.click();
         buttonSentField.click();
         inputError.shouldBe(exist);
@@ -139,11 +156,10 @@ public class CallbackTest {
 
     @Test
     public void shouldWarnIfBadDate2() {
-        String date = LocalDate.now().plusDays(2).format(ofPattern("dd.MM.yyyy"));
-        cityField.setValue("Москва");
-        dateField.setValue(date);
-        nameField.setValue("Иван Петров");
-        phoneField.setValue("+79000000000");
+        cityField.setValue(city);
+        dateField.setValue(badDate2);
+        nameField.setValue(user);
+        phoneField.setValue(tel);
         checkboxField.click();
         buttonSentField.click();
         inputError.shouldBe(exist);
@@ -151,10 +167,10 @@ public class CallbackTest {
 
     @Test
     public void shouldWarnIfBadUserName() {
-        cityField.setValue("Москва");
+        cityField.setValue(city);
         dateField.setValue(date);
-        nameField.setValue("Ivan Petrov");
-        phoneField.setValue("+79000000000");
+        nameField.setValue(badUser);
+        phoneField.setValue(tel);
         checkboxField.click();
         buttonSentField.click();
         inputError.shouldBe(exist);
@@ -162,10 +178,10 @@ public class CallbackTest {
 
     @Test
     public void shouldWarnIfBadTelephone1() {
-        cityField.setValue("Москва");
+        cityField.setValue(city);
         dateField.setValue(date);
-        nameField.setValue("Иван Петров");
-        phoneField.setValue("+12345");
+        nameField.setValue(user);
+        phoneField.setValue(badTel1);
         checkboxField.click();
         buttonSentField.click();
         inputError.shouldBe(exist);
@@ -173,10 +189,10 @@ public class CallbackTest {
 
     @Test
     public void shouldWarnIfBadTelephone2() {
-        cityField.setValue("Москва");
+        cityField.setValue(city);
         dateField.setValue(date);
-        nameField.setValue("Иван Петров");
-        phoneField.setValue("+123456789012");
+        nameField.setValue(user);
+        phoneField.setValue(badTel2);
         checkboxField.click();
         buttonSentField.click();
         inputError.shouldBe(exist);
@@ -184,10 +200,10 @@ public class CallbackTest {
 
     @Test
     public void shouldWarnIfBadTelephone3() {
-        cityField.setValue("Москва");
+        cityField.setValue(city);
         dateField.setValue(date);
-        nameField.setValue("Иван Петров");
-        phoneField.setValue("+abcdefghijk");
+        nameField.setValue(user);
+        phoneField.setValue(badTel3);
         checkboxField.click();
         buttonSentField.click();
         inputError.shouldBe(exist);
